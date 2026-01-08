@@ -1,0 +1,16 @@
+# Ignore everything in htdocs EXCEPT specific folders
+*
+!.gitignore
+
+# Then explicitly include what you want
+!TestCodePHP/
+!future-project-folder/  # Add other project folders here
+
+# But ignore certain patterns within those folders
+TestCodePHP/vendor/
+TestCodePHP/.env
+TestCodePHP/storage/logs/
+TestCodePHP/storage/framework/
+*.log
+*.cache
+.DS_Store
