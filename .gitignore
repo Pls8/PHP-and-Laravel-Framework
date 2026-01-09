@@ -1,18 +1,26 @@
 # Ignore everything in htdocs EXCEPT specific folders
-*
-!.gitignore
+# Environment / secrets
+.env
+.env.*
 
-# Then explicitly include what you want
-!TestCodePHP/
-!TestCodePHP/**
-!todo-app/
-!todo-app/**  # Add other project folders here
+# Dependencies
+/vendor/
+/node_modules/
 
-# But ignore certain patterns within those folders
-TestCodePHP/vendor/
-TestCodePHP/.env
-TestCodePHP/storage/logs/
-TestCodePHP/storage/framework/
+# Logs & cache
 *.log
 *.cache
+/storage/logs/
+/storage/framework/
+
+# OS / editor junk
 .DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# XAMPP / system folders you never want
+/dashboard/
+/webalizer/
+/xampp/
+/img/
