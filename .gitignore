@@ -5,7 +5,8 @@
 # Then explicitly include what you want
 !TestCodePHP/
 !TestCodePHP/**
-!future-project-folder/  # Add other project folders here
+!todo-app/
+!todo-app/**  # Add other project folders here
 
 # But ignore certain patterns within those folders
 TestCodePHP/vendor/
