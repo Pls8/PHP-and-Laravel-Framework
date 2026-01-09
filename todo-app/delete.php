@@ -1,11 +1,20 @@
-<?
+<?php
+session_start();
 require_once __DIR__ . '/config/database.php';
 
-$id = $_GET['id'] ?? null;
-if ($id) {
-    $stmt = $pdo->prepare("DELETE FROM todos WHERE id = :id");
-    $stmt->execute([':id' => $id]);
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit;
 }
+
+$id = $_GET['id'] ?? null;
+$user_id = $_SESSION['user_id'];
+
+if ($id) {
+    $stmt = $pdo->prepare("DELETE FROM todos WHERE id = :id AND user_id = :user_id");
+    $stmt->execute([':id' => $id, ':user_id' => $user_id]);
+}
+
 header('Location: index.php');
 exit;
-
+?>
