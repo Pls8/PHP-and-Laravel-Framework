@@ -1,74 +1,68 @@
 <?php
-
 namespace App\Http\Controllers;
 
+use App\Interfaces\TodoRepositoryInterface;
 use Illuminate\Http\Request;
-use App\Models\Todo;
+use Illuminate\Support\Facades\Log;
+
 
 class TodoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    private TodoRepositoryInterface $todoRepository;
+
+    public function __construct(TodoRepositoryInterface $todoRepository)
+    {
+        $this->todoRepository = $todoRepository;
+    }
+
     public function index()
     {
-        $todos = Todo::all();
-        return view('todos.index', ['todos' => $todos]);
+        try {
+            $todos = $this->todoRepository->getAll();
+            return view('todos.index', compact('todos'));
+        } catch (\Exception $e) {
+            Log::error('Error fetching todos: ' . $e->getMessage());
+            return back()->with('error', 'Unable to load todos. Please try again.');
+        }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('todos.create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required|max:255'
+        $validated = $request->validate([
+            'title' => 'required|string|max:255|min:3',
         ]);
 
-        Todo::create([
-            'title' => $request->title
-        ]);
+        try {
+            $this->todoRepository->create($validated);
 
-        return redirect('/todos') -> with('success', 'Todo created successfully!');
+            return redirect()->route('todos.index')
+                ->with('success', 'Todo created successfully!');
+                
+        } catch (\InvalidArgumentException $e) {
+
+            return back()->withErrors(['title' => $e->getMessage()]);
+        } catch (\Exception $e) {
+
+            Log::error('Error creating todo: ' . $e->getMessage());
+            return back()->with('error', 'Failed to create todo. Please try again.');
+        }
     }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function destroy($id)
     {
-        $todo = 
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        try {
+            $success = $this->todoRepository->delete((int)$id);
+            
+            if ($success) {
+                return redirect()->route('todos.index')
+                    ->with('success', 'Todo deleted successfully!');
+            } else {
+                return redirect()->route('todos.index')
+                    ->with('error', 'Todo not found.');
+            }
+                    
+        } catch (\Exception $e) {
+            Log::error('Error deleting todo: ' . $e->getMessage());
+            return back()->with('error', 'Failed to delete todo. Please try again.');
+        }
     }
 }
