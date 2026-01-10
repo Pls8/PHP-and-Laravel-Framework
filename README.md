@@ -1,3 +1,4 @@
+![image alt](https://github.com/Pls8/PHP-and-Laravel-Framework/blob/main/RepoCoverphp_000000.jpg?raw=true)
 # PHP and Laravel Framework Projects
 
 ![PHP](https://img.shields.io/badge/PHP-8.x-blue)
